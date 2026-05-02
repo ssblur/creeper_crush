@@ -1,0 +1,35 @@
+{
+	"schemaVersion": 1,
+	"id": "creeper_crush",
+	"version": "${version}",
+	"name": "Creeper Crush",
+	"description": "An uninitialized Unfocused mod",
+	"authors": [ "SSBlur" ],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/ssblur/unfocused-creeper_crush"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/creeper_crush/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.ssblur.creeper_crush.fabric.CreeperCrushFabric"
+		],
+		"client": [
+			"com.ssblur.creeper_crush.fabric.CreeperCrushFabric"
+		]
+	},
+	"mixins": [
+		"creeper_crush.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=${fabric_loader_version}",
+		"minecraft": ">=${minecraft_version}",
+		"java": ">=25",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*",
+		"unfocused": ">=${unfocused_version}"
+	},
+	"suggests": {}
+}

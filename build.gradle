@@ -1,0 +1,111 @@
+import java.time.Instant
+
+buildscript {
+  ext.kotlin_version = kotlin_version
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+
+plugins {
+  id 'dev.architectury.loom-no-remap' version '1.14-SNAPSHOT' apply false
+  id "com.palantir.git-version" version "0.15.0"
+  id 'architectury-plugin' version '3.5-SNAPSHOT'
+  id 'com.gradleup.shadow' version '8.3.6' apply false
+}
+apply plugin: 'kotlin'
+
+architectury {
+  minecraft = project.minecraft_version
+}
+
+allprojects {
+  group = rootProject.maven_group
+  try {
+    def matcher = gitVersion() =~ /^v(\d+\.\d+\.\d+(-\d+\.\d+\.?\d*)?-?)?.*/
+    matcher.find()
+    version = matcher.group(1)
+    if (version.endsWith("-")) {
+      def instant = String.valueOf(System.getenv("VERSION_TIMESTAMP") ?: Instant.now().toEpochMilli())
+      version += "SNAPSHOT-" + instant
+    }
+  } catch(Exception ignored) {
+    version = "1"
+  }
+}
+
+subprojects {
+  apply plugin: 'dev.architectury.loom-no-remap'
+  apply plugin: 'architectury-plugin'
+  apply plugin: 'maven-publish'
+
+  base {
+      archivesName = "$rootProject.archives_name-$project.name"
+  }
+
+  repositories {
+    maven { url "https://mvn.blur.lol/snapshots" }
+    maven { url "https://mvn.blur.lol/releases" }
+    maven { url 'https://maven.blamejared.com' }
+    maven {
+      name = "TerraformersMC"
+      url = "https://maven.terraformersmc.com/"
+    }
+  }
+
+  loom {}
+
+  dependencies {
+    minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.1'
+  }
+
+  java {
+    withSourcesJar()
+  }
+
+  tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = jvm_version.toInteger()
+  }
+
+  // Configure Maven publishing.
+  publishing {
+    publications {
+      mavenJava(MavenPublication) {
+        artifactId = base.archivesName.get()
+        from components.java
+      }
+    }
+
+    repositories {}
+  }
+
+  processResources {
+    inputs.property 'version', project.version
+
+    filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml']) {
+      expand(
+              version: project.version,
+              minecraft_version: rootProject.minecraft_version,
+              unfocused_version: rootProject.unfocused_version,
+              fabric_loader_version: rootProject.fabric_loader_version
+      )
+    }
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+
+kotlin {
+  jvmToolchain(jvm_version.toInteger())
+}

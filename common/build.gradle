@@ -1,0 +1,23 @@
+plugins {
+  id 'org.jetbrains.kotlin.jvm'
+}
+
+architectury {
+    common rootProject.enabled_platforms.split(',')
+}
+
+dependencies {
+  implementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+
+  compileOnlyApi("com.ssblur.unfocused:unfocused-common:${rootProject.unfocused_version}")
+
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+}
+
+repositories {
+  mavenCentral()
+}
+
+kotlin {
+  jvmToolchain(jvm_version.toInteger())
+}
