@@ -1,5 +1,6 @@
 package com.ssblur.creeper_crush.screen
 
+import com.ssblur.creeper_crush.CreeperCrush
 import com.ssblur.creeper_crush.data.Dialogue
 import com.ssblur.creeper_crush.menu.DialogueMenu
 import com.ssblur.creeper_crush.network.CreeperCrushC2S
@@ -9,6 +10,7 @@ import com.ssblur.unfocused.screen.widget.ButtonWidget
 import com.ssblur.unfocused.screen.widget.MarkdownWidget
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.player.Inventory
@@ -17,7 +19,7 @@ import org.joml.Vector3f
 import java.util.*
 
 class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Component):
-  UnfocusedScreen<DialogueMenu>(menu, inventory, component, 480, 200) {
+  UnfocusedScreen<DialogueMenu>(menu, inventory, component, 400, 200) {
   var dialogue: Identifier? = null
   private var lastDialogue: Identifier? = null
   private var data: Dialogue.DialogueEntry? = null
@@ -42,10 +44,12 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
 
   override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, i: Int, j: Int, f: Float) {
     val uuid = menu.uuid
+    guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos+60, imageWidth-4, imageHeight-64)
     Minecraft.getInstance().level?.getEntity(UUID.fromString(uuid))?.let { entity ->
       val state = Minecraft.getInstance().entityRenderDispatcher.extractEntity(entity, f)
-      val rot = Quaternionf().rotateX(Math.PI.toFloat())
+      val rot = Quaternionf().rotateX(Math.PI.toFloat()).rotateY(entity.rotationVector.y / 180 * Math.PI.toFloat())
       val x = imageWidth - 200
+      val y = -20
       guiGraphics.entity(
         state,
         100.0f,
@@ -53,10 +57,20 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
         rot,
         null,
         x,
-        0,
+        y,
         x + 300,
-        300
+        300 + y
       )
+      EMOTIONS[data?.emotion]?.let {
+        guiGraphics.blitSprite(
+          RenderPipelines.GUI_TEXTURED,
+          it,
+          x + 118,
+          72 + y,
+          64,
+          64
+        )
+      }
     }
     super.extractRenderState(guiGraphics, i, j, f)
   }
@@ -68,16 +82,17 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
     if(data == null) return
     val data = data!!
 
-    var y = topPos + (imageHeight - 160)
+    val mdh = 60
+    var y = topPos + (imageHeight - 70 - mdh)
     // dialogue box
     add(MarkdownWidget(
       leftPos + 10,
       y,
       imageWidth - 20,
-      90,
+      mdh,
       LocalizedMarkdownReader.read(data.dialogue!!)
     )).setColor(230, 255, 230)
-    y += 80
+    y += mdh - 10
     // dialogue options
     data.options?.forEach {
       y += 24
@@ -104,7 +119,14 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
         CreeperCrushC2S.pickDialogue(CreeperCrushC2S.PickDialogue(""))
       })
     }
+  }
 
-    // entity emotion overlay
+  companion object {
+    val TEXTURE = CreeperCrush.location("widget/creeper_bg")
+
+    val EMOTIONS = mapOf<String, Identifier>(
+      "blush" to CreeperCrush.location("widget/blush"),
+      "happy" to CreeperCrush.location("widget/happy")
+    )
   }
 }

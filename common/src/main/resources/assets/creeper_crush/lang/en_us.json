@@ -2,5 +2,6 @@
   "item.creeper_crush.love_letter": "Love Letter",
   "dialogue.creeper_crush.give_letter": "Give Letter",
   "dialogue.creeper_crush.dont_give": "Goodbye",
-  "dialogue.creeper_crush.close": "Goodbye"
+  "dialogue.creeper_crush.close": "Goodbye",
+  "dialogue.creeper_crush.continue": "Continue"
 }

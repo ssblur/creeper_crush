@@ -4,10 +4,12 @@
     "never": true
   },
   "dialogue": "creeper_crush:creeper/base/letter_received",
-  "options": {},
+  "options": {
+    "dialogue.creeper_crush.continue": "creeper_crush:creeper/base/letter_received_2"
+  },
   "emotion": "blush",
   "change_condition": {
     "letter": true
   },
-  "ends_dialogue": true
+  "ends_dialogue": false
 }
