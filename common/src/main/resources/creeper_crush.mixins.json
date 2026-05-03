@@ -2,7 +2,9 @@
   "required": true,
   "package": "com.ssblur.creeper_crush.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "SavedDataStorageAccessor"
+  ],
   "injectors": {
     "defaultRequire": 1
 	}

@@ -2,12 +2,12 @@
 	"schemaVersion": 1,
 	"id": "creeper_crush",
 	"version": "${version}",
-	"name": "Creeper Crush",
-	"description": "An uninitialized Unfocused mod",
+	"name": "I have a Crush on a Creeper?!?",
+	"description": "It's like if a dating sim was bad.",
 	"authors": [ "SSBlur" ],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/ssblur/unfocused-creeper_crush"
+		"homepage": "https://github.com/ssblur/creeper_crush",
+		"sources": "https://github.com/ssblur/creeper_crush"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/creeper_crush/icon.png",

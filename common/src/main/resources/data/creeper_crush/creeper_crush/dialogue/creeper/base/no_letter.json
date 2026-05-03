@@ -1,0 +1,10 @@
+{
+  "entity": "minecraft:creeper",
+  "condition": {
+    "never": true
+  },
+  "dialogue": "creeper_crush:creeper/base/no_letter",
+  "options": {},
+  "emotion": "neutral",
+  "ends_dialogue": true
+}
