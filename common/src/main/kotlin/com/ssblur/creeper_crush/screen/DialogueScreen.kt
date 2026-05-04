@@ -45,6 +45,19 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
   override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, i: Int, j: Int, f: Float) {
     val uuid = menu.uuid
 
+    data?.sprites?.forEach {
+      val x = (leftPos + imageWidth) - (it.x + it.w)
+      val y = (topPos + imageHeight) - (it.y + it.h)
+      guiGraphics.blitSprite(
+        RenderPipelines.GUI_TEXTURED,
+        it.location,
+        x,
+        y,
+        it.w,
+        it.h
+      )
+    }
+
     textbox(data?.textbox).let {
       guiGraphics.blitSprite(
         RenderPipelines.GUI_TEXTURED,
@@ -80,19 +93,6 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
           72 + y,
           64,
           64
-        )
-      }
-
-      data?.sprites?.forEach {
-        val x = (leftPos + imageWidth) - (it.x + it.w)
-        val y = (topPos + imageHeight) - (it.y + it.h)
-        guiGraphics.blitSprite(
-          RenderPipelines.GUI_TEXTURED,
-          it.location,
-          x,
-          y,
-          it.w,
-          it.h
         )
       }
     }
