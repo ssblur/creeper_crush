@@ -5,6 +5,6 @@
   },
   "dialogue": "creeper_crush:creeper/base/no_letter",
   "options": {},
-  "emotion": "neutral",
+  "emotion": null,
   "ends_dialogue": true
 }
