@@ -5,6 +5,7 @@ import com.ssblur.creeper_crush.menu.DialogueMenu
 import com.ssblur.creeper_crush.network.CreeperCrushC2S
 import com.ssblur.creeper_crush.network.CreeperCrushS2C
 import com.ssblur.unfocused.ModInitializer
+import com.ssblur.unfocused.event.common.PlayerJoinedEvent
 import net.minecraft.client.Minecraft
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
@@ -18,6 +19,7 @@ import net.minecraft.world.phys.HitResult
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+@Suppress("unused")
 object CreeperCrush : ModInitializer("creeper_crush") {
     const val MODID = "creeper_crush"
     val LOGGER: Logger = LoggerFactory.getLogger(id)
@@ -50,6 +52,12 @@ object CreeperCrush : ModInitializer("creeper_crush") {
       Dialogue.init()
       CreeperCrushC2S.init()
       CreeperCrushS2C.init()
+
+      PlayerJoinedEvent.register {
+        Dialogue.entries.forEach { (key, value) ->
+          CreeperCrushS2C.syncDate(CreeperCrushS2C.DialoguePacket(key, value), listOf(it))
+        }
+      }
     }
 
     fun clientInit() {
