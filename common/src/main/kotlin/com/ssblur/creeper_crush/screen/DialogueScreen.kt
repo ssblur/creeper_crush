@@ -69,32 +69,34 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
       )
     }
 
-    Minecraft.getInstance().level?.getEntity(UUID.fromString(uuid))?.let { entity ->
-      val state = Minecraft.getInstance().entityRenderDispatcher.extractEntity(entity, f)
-      val rot = Quaternionf().rotateX(Math.PI.toFloat()).rotateY(entity.rotationVector.y / 180 * Math.PI.toFloat())
-      val x = imageWidth - 200
-      val y = -20
-      guiGraphics.entity(
-        state,
-        100.0f,
-        Vector3f(0.0f, state.boundingBoxHeight / 2.0f, 0.0f),
-        rot,
-        null,
-        x,
-        y,
-        x + 300,
-        300 + y
-      )
-      emotion(data?.emotion)?.let {
-        guiGraphics.blitSprite(
-          RenderPipelines.GUI_TEXTURED,
-          it,
-          x + 118,
-          72 + y,
-          64,
-          64
+    if(uuid != null)
+      Minecraft.getInstance().level?.getEntity(UUID.fromString(uuid))?.let { entity ->
+        val state = Minecraft.getInstance().entityRenderDispatcher.extractEntity(entity, f)
+        val rot = Quaternionf().rotateX(Math.PI.toFloat()).rotateY(entity.rotationVector.y / 180 * Math.PI.toFloat())
+        val x = imageWidth - 200
+        val y = -20
+
+        guiGraphics.entity(
+          state,
+          100.0f,
+          Vector3f(0.0f, state.boundingBoxHeight / 2.0f, 0.0f),
+          rot,
+          null,
+          x,
+          y,
+          x + 300,
+          300 + y
         )
-      }
+        emotion(data?.emotion)?.let {
+          guiGraphics.blitSprite(
+            RenderPipelines.GUI_TEXTURED,
+            it,
+            x + 118,
+            72 + y,
+            64,
+            64
+          )
+        }
     }
     super.extractRenderState(guiGraphics, i, j, f)
   }
