@@ -25,8 +25,8 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
   private var data: Dialogue.DialogueEntry? = null
 
   override fun init() {
-    leftPos = this.width - imageWidth
-    topPos = this.height - imageHeight
+    leftPos = (this.width - imageWidth) / 2
+    topPos = this.height - (imageHeight + 10)
     dialogue = menu.location
     build()
   }
@@ -44,6 +44,8 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
 
   override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, i: Int, j: Int, f: Float) {
     val uuid = menu.uuid
+    var x = leftPos
+    var y = topPos
 
     data?.sprites?.forEach {
       val x = (leftPos + imageWidth) - (it.x + it.w)
@@ -73,8 +75,8 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
       Minecraft.getInstance().level?.getEntity(UUID.fromString(uuid))?.let { entity ->
         val state = Minecraft.getInstance().entityRenderDispatcher.extractEntity(entity, f)
         val rot = Quaternionf().rotateX(Math.PI.toFloat()).rotateY(entity.rotationVector.y / 180 * Math.PI.toFloat())
-        val x = imageWidth - 200
-        val y = -20
+        x += imageWidth / 2
+        y -= imageHeight / 2
 
         guiGraphics.entity(
           state,
@@ -123,9 +125,9 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
     data.options?.forEach {
       y += 24
       add(ButtonWidget(
-        leftPos + 20,
+        leftPos + 30,
         y,
-        width / 2 - 40,
+        imageWidth - 60,
         22,
         Component.translatable(it.key)
       ) {
@@ -136,9 +138,9 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
     if(data.ends_dialogue == true) {
       y += 24
       add(ButtonWidget(
-        leftPos + 20,
+        leftPos + 30,
         y,
-        width / 2 - 40,
+        imageWidth - 60,
         22,
         Component.translatable("dialogue.creeper_crush.close")
       ) {
