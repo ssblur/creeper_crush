@@ -1,0 +1,18 @@
+{
+  "entity": "minecraft:creeper",
+  "requires": "kawaii",
+  "condition": {
+    "letter": true,
+    "kawaii:bombon": false
+  },
+  "dialogue": "creeper_crush:creeper/kawaii/crush",
+  "options": {},
+  "emotion": "happy",
+  "ends_dialogue": true,
+  "change_condition": {
+    "kawaii:bombon": true
+  },
+  "commands": [
+    "give @s kawaii:signed_bombon_box[minecraft:custom_data={signed_by_uuid:\"$date_uuid\",player_name:\"$date_name\"}]"
+  ]
+}

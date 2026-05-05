@@ -2,6 +2,7 @@ package com.ssblur.creeper_crush.network
 
 import com.ssblur.creeper_crush.CreeperCrush
 import com.ssblur.creeper_crush.data.Dialogue
+import com.ssblur.creeper_crush.data.Dialogue.runCommands
 import com.ssblur.creeper_crush.data.PlayerDateCondition
 import com.ssblur.creeper_crush.menu.DialogueMenu
 import com.ssblur.unfocused.menu.SimpleMenuProvider
@@ -42,13 +43,7 @@ object CreeperCrushC2S {
     OpenDialogue::class
   ) { (id), player ->
     val entity = player.level().getEntity(id)
-    Dialogue.entries.entries.filter {
-      it.value.condition?.all { c ->
-        PlayerDateCondition.computeIfAbsent(player)!!.getCondition(entity as LivingEntity, c.key) == c.value
-      } ?: true
-    }.filter{
-      BuiltInRegistries.ENTITY_TYPE.get(it.value.entity!!).getOrNull()?.value() == entity?.type
-    }.randomOrNull()?.let {
+    Dialogue.randomEntry(player, entity)?.let {
       player.openMenu(SimpleMenuProvider { i, inventory, _ ->
         val menu = DialogueMenu(i, inventory, entity as LivingEntity)
         menu.location = it.key
@@ -60,6 +55,7 @@ object CreeperCrushC2S {
         condition?.conditions[entity!!.stringUUID]?.set(it.key, it.value)
         condition?.setDirty()
       }
+      it.value.runCommands(player, entity)
     }
   }
 

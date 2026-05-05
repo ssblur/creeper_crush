@@ -8,10 +8,10 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
 
-class PlayerDateCondition(data: Map<String, Map<String, Boolean>>): SavedData() {
+class PlayerDateCondition(data: Map<String, Map<String, Boolean>>?): SavedData() {
   var conditions: MutableMap<String, MutableMap<String, Boolean>>
   init {
-    conditions = data.mapValues { (key, value) -> value.toMutableMap() }.toMutableMap()
+    conditions = data?.mapValues { (key, value) -> value.toMutableMap() }?.toMutableMap() ?: mutableMapOf()
   }
 
   fun getCondition(entity: Entity, condition: String): Boolean {
