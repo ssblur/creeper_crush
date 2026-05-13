@@ -23,7 +23,7 @@ object CreeperCrushC2S {
       val option = data?.options?.get(choice)?.let { CreeperCrush.location(it) }
       if(option != null) {
         val pick = Dialogue.entries[option]!!
-        menu.location = pick.dialogue
+        menu.location = option
         val condition = PlayerDateCondition.computeIfAbsent(player)
         pick.change_condition?.forEach {
           condition?.conditions[menu.uuid]?.set(it.key, it.value)
