@@ -19,7 +19,7 @@ import org.joml.Vector3f
 import java.util.*
 
 class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Component):
-  UnfocusedScreen<DialogueMenu>(menu, inventory, component, 400, 200) {
+  UnfocusedScreen<DialogueMenu>(menu, inventory, component, 400, 260) {
   var dialogue: Identifier? = null
   private var lastDialogue: Identifier? = null
   private var data: Dialogue.DialogueEntry? = null
@@ -65,22 +65,22 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
         RenderPipelines.GUI_TEXTURED,
         it,
         leftPos,
-        topPos+60,
+        topPos+90,
         imageWidth-4,
-        imageHeight-64
+        imageHeight-94
       )
     }
 
     if(uuid != null)
       Minecraft.getInstance().level?.getEntity(UUID.fromString(uuid))?.let { entity ->
         val state = Minecraft.getInstance().entityRenderDispatcher.extractEntity(entity, f)
-        val rot = Quaternionf().rotateX(Math.PI.toFloat()).rotateY(entity.rotationVector.y / 180 * Math.PI.toFloat())
+        val rot = Quaternionf().rotateX(Math.PI.toFloat())
         x += imageWidth / 2
-        y -= imageHeight / 2
+        y -= imageHeight / 5
 
         guiGraphics.entity(
           state,
-          100.0f,
+          70.0f,
           Vector3f(0.0f, state.boundingBoxHeight / 2.0f, 0.0f),
           rot,
           null,
@@ -110,17 +110,17 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
     if(data == null) return
     val data = data!!
 
-    val mdh = 60
-    var y = topPos + (imageHeight - 70 - mdh)
+    val mdh = 35
+    var y = topPos + (imageHeight - 120 - mdh)
     // dialogue box
     add(MarkdownWidget(
       leftPos + 10,
       y,
-      imageWidth - 20,
+      imageWidth - 100,
       mdh,
       LocalizedMarkdownReader.read(data.dialogue!!)
     )).setColor(230, 255, 230)
-    y += mdh - 10
+    y += mdh
     // dialogue options
     data.options?.forEach {
       y += 24

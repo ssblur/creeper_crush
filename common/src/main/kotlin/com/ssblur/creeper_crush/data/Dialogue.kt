@@ -6,14 +6,11 @@ import com.ssblur.unfocused.data.DataLoaderRegistry.registerSimpleDataLoader
 import net.minecraft.commands.CommandSource
 import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.permissions.PermissionSet
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
-import net.minecraft.world.phys.Vec2
 import kotlin.jvm.optionals.getOrNull
 
 object Dialogue {
@@ -44,11 +41,11 @@ object Dialogue {
 
   fun validEntries(player: Player, entity: Entity?): Map<Identifier, DialogueEntry> {
     if(entity == null) return mapOf()
-    return entries.filter { (k, v) ->
+    return entries.filter { (_, v) ->
       v.requires == null || Unfocused.isModLoaded(v.requires)
     }.filter {
       it.value.condition?.all { c ->
-        PlayerDateCondition.computeIfAbsent(player)!!.getCondition(entity as LivingEntity, c.key) == c.value
+        PlayerDateCondition.computeIfAbsent(player)!!.getCondition(entity, c.key) == c.value
       } ?: true
     }.filter{
       BuiltInRegistries.ENTITY_TYPE.get(it.value.entity!!).getOrNull()?.value() == entity.type

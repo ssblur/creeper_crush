@@ -7,10 +7,6 @@ import com.ssblur.creeper_crush.data.PlayerDateCondition
 import com.ssblur.creeper_crush.menu.DialogueMenu
 import com.ssblur.unfocused.menu.SimpleMenuProvider
 import com.ssblur.unfocused.network.NetworkManager
-import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.world.entity.LivingEntity
-import kotlin.collections.get
-import kotlin.jvm.optionals.getOrNull
 
 object CreeperCrushC2S {
   data class PickDialogue(val choice: String)
@@ -45,9 +41,9 @@ object CreeperCrushC2S {
     val entity = player.level().getEntity(id)
     Dialogue.randomEntry(player, entity)?.let {
       player.openMenu(SimpleMenuProvider { i, inventory, _ ->
-        val menu = DialogueMenu(i, inventory, entity as LivingEntity)
+        val menu = DialogueMenu(i, inventory, entity)
         menu.location = it.key
-        menu.uuid = entity.stringUUID
+        menu.uuid = entity?.stringUUID
         menu
       })
       val condition = PlayerDateCondition.computeIfAbsent(player)
