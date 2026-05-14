@@ -93,8 +93,8 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
           guiGraphics.blitSprite(
             RenderPipelines.GUI_TEXTURED,
             it,
-            x + 118,
-            72 + y,
+            x + 122,
+            88 + y,
             64,
             64
           )
@@ -110,8 +110,8 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
     if(data == null) return
     val data = data!!
 
-    val mdh = 35
-    var y = topPos + (imageHeight - 120 - mdh)
+    val mdh = 45
+    var y = topPos + (imageHeight - 115 - mdh)
     // dialogue box
     add(MarkdownWidget(
       leftPos + 10,
@@ -120,7 +120,7 @@ class DialogueScreen(menu: DialogueMenu, inventory: Inventory, component: Compon
       mdh,
       LocalizedMarkdownReader.read(data.dialogue!!)
     )).setColor(230, 255, 230)
-    y += mdh
+    y += mdh - 5
     // dialogue options
     data.options?.forEach {
       y += 24
