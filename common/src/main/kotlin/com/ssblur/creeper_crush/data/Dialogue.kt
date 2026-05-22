@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.PermissionSet
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
@@ -57,14 +58,17 @@ object Dialogue {
   fun init() {}
 
   fun DialogueEntry.runCommands(player: Player, entity: Entity?) {
+    println("Running ${commands?.size ?: 0} commands for Dialogue")
+    println(entity)
     if(entity == null) return
-    val playerSelector = getTargetSelector(player)
     val entitySelector = getTargetSelector(entity)
     val substitutions = mapOf(
       $$"$date_uuid" to entity.stringUUID,
       $$"$date_name" to entity.name.string.ifEmpty { "Someone Special" },
+      $$"$player_name" to player.name.string.ifEmpty { "My Beloved" },
       "@date" to entitySelector
     )
+
     player.level().server?.let {
       val commands = it.commands
       this.commands?.forEach { command ->
@@ -72,22 +76,15 @@ object Dialogue {
         substitutions.forEach { (key, value) ->
           run = run.replace(key, value)
         }
-        run = "execute as $playerSelector run $run"
 
         val s = commands.dispatcher.parse(
           run,
-          CommandSourceStack(
-            CommandSource.NULL,
-            player.position(),
-            player.rotationVector,
-            player.level() as ServerLevel,
-            PermissionSet.ALL_PERMISSIONS,
-            entity.name.string,
-            entity.name,
-            it,
-            null
-          )
+          (player as ServerPlayer).createCommandSourceStack()
+            .withPermission(PermissionSet.ALL_PERMISSIONS)
         )
+        s.exceptions.forEach {
+          CreeperCrush.LOGGER.warn(it.value.message)
+        }
         commands.performCommand(s, run)
       }
     }

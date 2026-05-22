@@ -9,10 +9,8 @@ import net.minecraft.world.level.saveddata.SavedData
 import net.minecraft.world.level.saveddata.SavedDataType
 
 class PlayerDateCondition(data: Map<String, Map<String, Boolean>>?): SavedData() {
-  var conditions: MutableMap<String, MutableMap<String, Boolean>>
-  init {
-    conditions = data?.mapValues { (key, value) -> value.toMutableMap() }?.toMutableMap() ?: mutableMapOf()
-  }
+  var conditions: MutableMap<String, MutableMap<String, Boolean>?> =
+    data?.mapValues { (key, value) -> value.toMutableMap() }?.toMutableMap() ?: mutableMapOf()
 
   fun getCondition(entity: Entity, condition: String): Boolean {
     val id = entity.uuid.toString()
@@ -30,7 +28,7 @@ class PlayerDateCondition(data: Map<String, Map<String, Boolean>>?): SavedData()
       return server?.dataStorage?.computeIfAbsent(
         SavedDataType(
           CreeperCrush.location("player/$id"),
-          { PlayerDateCondition(mapOf()) },
+          { PlayerDateCondition(null) },
           CODEC,
           DataFixTypes.PLAYER
         )

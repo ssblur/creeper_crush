@@ -29,6 +29,7 @@ object CreeperCrushC2S {
           condition?.conditions[menu.uuid]?.set(it.key, it.value)
           condition?.setDirty()
         }
+        pick.runCommands(player, menu.entity)
       }
     }
   }
