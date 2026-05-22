@@ -3,11 +3,8 @@ package com.ssblur.creeper_crush.data
 import com.ssblur.creeper_crush.CreeperCrush
 import com.ssblur.unfocused.Unfocused
 import com.ssblur.unfocused.data.DataLoaderRegistry.registerSimpleDataLoader
-import net.minecraft.commands.CommandSource
-import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.permissions.PermissionSet
 import net.minecraft.world.entity.Entity
@@ -37,6 +34,14 @@ object Dialogue {
 
     val requires: String?, // required mod
   )
+
+  fun noneMatch(entity: Entity): Boolean {
+    return entries.filter { (_, v) ->
+      v.requires == null || Unfocused.isModLoaded(v.requires)
+    }.filter{
+      BuiltInRegistries.ENTITY_TYPE.get(it.value.entity!!).getOrNull()?.value() == entity.type
+    }.isEmpty()
+  }
 
   val entries = CreeperCrush.registerSimpleDataLoader("creeper_crush/dialogue", DialogueEntry::class)
 
