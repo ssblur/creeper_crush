@@ -3,9 +3,11 @@ package com.ssblur.creeper_crush.data
 import com.ssblur.creeper_crush.CreeperCrush
 import com.ssblur.unfocused.Unfocused
 import com.ssblur.unfocused.data.DataLoaderRegistry.registerSimpleDataLoader
+import net.minecraft.commands.CommandSource
+import net.minecraft.commands.CommandSourceStack
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
-import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.permissions.PermissionSet
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
@@ -63,8 +65,6 @@ object Dialogue {
   fun init() {}
 
   fun DialogueEntry.runCommands(player: Player, entity: Entity?) {
-    println("Running ${commands?.size ?: 0} commands for Dialogue")
-    println(entity)
     if(entity == null) return
     val entitySelector = getTargetSelector(entity)
     val substitutions = mapOf(
@@ -81,15 +81,23 @@ object Dialogue {
         substitutions.forEach { (key, value) ->
           run = run.replace(key, value)
         }
+        run = "execute as ${getTargetSelector(player)} run $run"
 
         val s = commands.dispatcher.parse(
           run,
-          (player as ServerPlayer).createCommandSourceStack()
-            .withPermission(PermissionSet.ALL_PERMISSIONS)
+          CommandSourceStack(
+            CommandSource.NULL,
+            player.position(),
+            player.rotationVector,
+            player.level() as ServerLevel,
+            PermissionSet.ALL_PERMISSIONS,
+            entity.name.string,
+            entity.name,
+            it,
+            null
+          )
         )
-        s.exceptions.forEach {
-          CreeperCrush.LOGGER.warn(it.value.message)
-        }
+
         commands.performCommand(s, run)
       }
     }
